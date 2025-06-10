@@ -1,6 +1,12 @@
+@webAutomation
 Feature: Example feature
 
-@myTag
-  Scenario: Example scenario
-    Given I open the Google homepage
-    Then the title should be "Google"
+
+
+
+  @myTag
+  Scenario: : testing home page
+    Given I am in the home page
+    When I click in sing in
+    When I send the login info
+    Then The welcome user text should be visible
