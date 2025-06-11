@@ -22,7 +22,7 @@ public class LoginPage extends BasePage {
 
     ConfigLoader configLoader = new ConfigLoader();
 
-    /*
+    /**
     This method sends the keys to log in
      */
     public void sendLoginInfo () {

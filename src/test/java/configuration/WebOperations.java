@@ -74,6 +74,7 @@ public class WebOperations {
     public void waitForVisibility(WebElement element) {
         this.wait.until(ExpectedConditions.visibilityOf(element));
     }
+
     public void waitForVisibility(WebElement element, Duration seconds){
         new WebDriverWait(driver,seconds).until(ExpectedConditions.visibilityOf(element));
 
@@ -125,5 +126,11 @@ public class WebOperations {
      */
     public void waitForAttributeChange(WebElement element, String attribute, String value) {
         this.wait.until(ExpectedConditions.attributeToBe(element, attribute, value));
+    }
+
+    public void scrollToElement (WebElement element) {
+        new Actions(driver)
+                .scrollToElement(element)
+                .perform();
     }
 }
