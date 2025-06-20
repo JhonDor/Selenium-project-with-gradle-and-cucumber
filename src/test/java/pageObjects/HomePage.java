@@ -50,6 +50,15 @@ public class HomePage extends BasePage {
     @FindBy(css = ".swatch-attribute.color")
     private WebElement itemColor;
 
+    @FindBy(id = "ui-id-4")
+    private WebElement womenDropDown;
+
+    @FindBy(id = "ui-id-9")
+    private WebElement topsDropDown;
+
+    @FindBy(id = "ui-id-11")
+    private WebElement womenJacketsOption;
+
 
     ConfigLoader configLoader = new ConfigLoader();
 
@@ -116,7 +125,7 @@ public class HomePage extends BasePage {
      * Checks if a given web element is displayed.
      *
      * @param element The web element to check.
-     * @return True if the element is displayed, false otherwise.
+     * @return True if the element is displayed, False otherwise.
      */
 
     private boolean isElementDisplayed(WebElement element) {
@@ -125,5 +134,21 @@ public class HomePage extends BasePage {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    /**
+     * clicks on the woman dropdown
+     */
+    public void clickWomenDropDown () {
+        super.mouseOver(this.womenDropDown);
+    }
+
+    public void clickTopsDropDown () {
+        super.mouseOver(this.topsDropDown);
+    }
+
+    public void clickWomenJackets () {
+        super.mouseOver(this.womenJacketsOption);
+        super.clickElement(this.womenJacketsOption);
     }
 }

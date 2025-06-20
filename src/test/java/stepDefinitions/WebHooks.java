@@ -32,7 +32,7 @@ public class WebHooks {
     /**
      * After hook for closing the browser.
      */
-    @After
+    //@After
     public void tearDown(Scenario scenario) {
         scenario.getSourceTagNames().forEach(tag -> {
             if (tag.equals("@webAutomation")) {

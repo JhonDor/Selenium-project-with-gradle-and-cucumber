@@ -133,4 +133,11 @@ public class WebOperations {
                 .scrollToElement(element)
                 .perform();
     }
+
+    public void ScrollByGivenAmount (WebElement element) {
+        int deltaY = element.getRect().y;
+        new Actions(driver)
+                .scrollByAmount(0, deltaY)
+                .perform();
+    }
 }
