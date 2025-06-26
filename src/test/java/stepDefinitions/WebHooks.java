@@ -22,7 +22,7 @@ public class WebHooks {
         scenario.getSourceTagNames().forEach(tag -> {
             if (tag.equals("@webAutomation")) {
                 driver = new DriverWeb();
-                driver.getDriver().get("https://magento.softwaretestingboard.com/");
+                driver.getDriver().get("https://practicesoftwaretesting.com/");
                 driver.getDriver().manage().window().maximize();
             }
         });

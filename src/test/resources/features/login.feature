@@ -6,4 +6,4 @@ Feature: Login feature
     Given I am in the home page
     When I click in sing in
     When I send the login information
-    Then The welcome user text should be visible
+    Then The My account should be visible

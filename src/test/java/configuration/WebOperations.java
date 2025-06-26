@@ -8,6 +8,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 import static org.openqa.selenium.support.PageFactory.initElements;
 
@@ -17,7 +18,7 @@ import static org.openqa.selenium.support.PageFactory.initElements;
 public class WebOperations {
 
     private final WebDriver driver;
-    private final WebDriverWait wait;
+    protected final WebDriverWait wait;
 
     public WebOperations(WebDriver driver) {
         this.driver = driver;
@@ -65,6 +66,7 @@ public class WebOperations {
         this.waitForVisibility(element);
         element.sendKeys(text);
     }
+
 
     /**
      * Allows to wait for an element to be visible.
@@ -139,5 +141,16 @@ public class WebOperations {
         new Actions(driver)
                 .scrollByAmount(0, deltaY)
                 .perform();
+    }
+
+    public void waitForStaleness (WebElement element) {
+        this.wait.until(ExpectedConditions.stalenessOf(element));
+    }
+
+    // Method to wait for the staleness of all product elements
+    public void waitForStaleness(List<WebElement> productsInHomepage) {
+        for (WebElement product : productsInHomepage) {
+            this.wait.until(ExpectedConditions.stalenessOf(product));
+        }
     }
 }

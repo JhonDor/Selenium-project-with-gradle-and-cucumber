@@ -2,13 +2,26 @@
 Feature: Example feature
 
 
-  Scenario: Verify the hot sellers section is properly displayed
+  Scenario: Verify products are properly displayed in the home page
     Given I am in the home page
-    When I scroll to the hot sellers section
-    Then the hot sellers section should have 6 products
+    Then The home page should have a banner
+    And The sort option should be displayed
+    And 9 products should be displayed
+    And Price Range should be displayed
+    And Filters should be displayed
 
 
-  Scenario: Verify the hot sellers items have all their properties properly displayed
+  Scenario: Verify the search bar is working
     Given I am in the home page
-    When I scroll to the hot sellers section
-    Then the hot sellers items should have all their information displayed
+    When I search for "pliers" in the search bar
+    Then All the products should be "Pliers"
+
+
+  @testing
+  Scenario: Verify the search bar is working
+    Given I am in the home page
+    When I sort the products by alphabetical order
+    Then All products should be in alphabetical order
+
+
+

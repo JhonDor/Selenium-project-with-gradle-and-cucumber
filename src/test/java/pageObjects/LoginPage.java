@@ -14,11 +14,11 @@ public class LoginPage extends BasePage {
     @FindBy(id = "email")
     private WebElement email;
 
-    @FindBy(id = "pass")
+    @FindBy(id = "password")
     private WebElement password;
 
-    @FindBy(id = "send2")
-    private WebElement singInButton;
+    @FindBy(className = "btnSubmit")
+    private WebElement loginButton;
 
     ConfigLoader configLoader = new ConfigLoader();
 
@@ -31,6 +31,6 @@ public class LoginPage extends BasePage {
 
         super.typeOnInput(this.email, email);
         super.typeOnInput(this.password, password);
-        super.clickElement(this.singInButton);
+        super.clickElement(this.loginButton);
     }
 }
