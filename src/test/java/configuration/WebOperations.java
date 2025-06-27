@@ -71,12 +71,17 @@ public class WebOperations {
     /**
      * Allows to wait for an element to be visible.
      *
-     * @param element WebElement
+     * @param element a WebElement provided
      */
     public void waitForVisibility(WebElement element) {
         this.wait.until(ExpectedConditions.visibilityOf(element));
     }
 
+    /**
+     * Allows to wait for an element to be visible.
+     * @param element a webElement provided
+     * @param seconds the amount of seconds to wait
+     */
     public void waitForVisibility(WebElement element, Duration seconds){
         new WebDriverWait(driver,seconds).until(ExpectedConditions.visibilityOf(element));
 
@@ -111,15 +116,6 @@ public class WebOperations {
     }
 
     /**
-     * Allows to wait for a list of element to be present on the DOM of the page.
-     *
-     * @param locator String
-     */
-    public void waitForPresenceOfElements(String locator) {
-        this.wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(locator)));
-    }
-
-    /**
      * Allows to wait for an element attribute to change to a given value.
      *
      * @param element   WebElement
@@ -147,10 +143,4 @@ public class WebOperations {
         this.wait.until(ExpectedConditions.stalenessOf(element));
     }
 
-    // Method to wait for the staleness of all product elements
-    public void waitForStaleness(List<WebElement> productsInHomepage) {
-        for (WebElement product : productsInHomepage) {
-            this.wait.until(ExpectedConditions.stalenessOf(product));
-        }
-    }
 }

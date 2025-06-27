@@ -1,15 +1,16 @@
 package pageObjects;
 
-import configuration.ConfigLoader;
+
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.Select;
 
-import java.time.Duration;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 
 public class HomePage extends BasePage {
@@ -20,12 +21,6 @@ public class HomePage extends BasePage {
 
     @FindBy(css = "a[data-test=\"nav-sign-in\"]")
     private WebElement sigIn;
-
-    @FindBy(className = "logged-in")
-    private WebElement loggedInIcon;
-
-    @FindBy(xpath = "//div[h2[text()='Hot Sellers']]")
-    private WebElement hotSellersTitle;
 
     @FindBy(className = "card")
     private List<WebElement> productsInHomepage;
@@ -48,15 +43,21 @@ public class HomePage extends BasePage {
     @FindBy(className = "card-title")
     private List<WebElement> productsTitle;
 
+
     @FindBy(css = "select[data-test='sort']")
     private WebElement sortDropDown;
 
-    @FindBy(className = "product-price")
-    private List<WebElement> productPrice;
+    @FindBy(css = "a[data-test=\"nav-cart\"]")
+    private WebElement shoppingCarIcon;
 
+    @FindBy(css = "a[data-test=\"nav-home\"]")
+    private WebElement homePageIcon;
 
+    /**
+     * this method verifies if all the elements are sorted in alphabetical order
+     * @return true if al the elements are sorted correctly, false otherwise
+     */
     public boolean areProductsSortedAlphabetically() {
-        super.getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
         if (productsTitle == null || productsTitle.size() < 2) {
             return true;
         }
@@ -74,49 +75,14 @@ public class HomePage extends BasePage {
         return true;
     }
 
-    public boolean verifyProductTitlesSorted() {
-        super.getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
-        return this.areProductsSortedAlphabetically();
+    /**
+     * this method clicks in the title of the first element on the homepage
+     */
+    public void clickProductByTitle() {
+        super.wait.until(ExpectedConditions.visibilityOfAllElements(productsTitle));
+        super.clickElement(this.productsTitle.getFirst());
+
     }
-
-
-
-
-
-
-
-
-
-
-@FindBy(className = "product-item-name")
-    private WebElement productItemName;
-
-    @FindBy(className = "rating-summary")
-    private WebElement ratingSummary;
-
-    @FindBy(className = "reviews-actions")
-    private WebElement reviewsActions;
-
-    @FindBy(className = "normal-price")
-    private WebElement itemPrice;
-
-    @FindBy(css = ".swatch-attribute.size")
-    private WebElement itemSize;
-
-    @FindBy(css = ".swatch-attribute.color")
-    private WebElement itemColor;
-
-    @FindBy(id = "ui-id-4")
-    private WebElement womenDropDown;
-
-    @FindBy(id = "ui-id-9")
-    private WebElement topsDropDown;
-
-    @FindBy(id = "ui-id-11")
-    private WebElement womenJacketsOption;
-
-
-    ConfigLoader configLoader = new ConfigLoader();
 
     /**
      * clicks in the sig in button
@@ -212,6 +178,7 @@ public class HomePage extends BasePage {
     public boolean doAllProductTitlesContain(String searchString) {
         int initialCount = countProducts();
 
+
         super.wait.until(new ExpectedCondition<Boolean>() {
             public Boolean apply(WebDriver driver) {
                 return countProducts() != initialCount;
@@ -226,163 +193,35 @@ public class HomePage extends BasePage {
         return true;
     }
 
-
+    /**
+     * this method clicks on the sort dropdown
+     */
     public void clickSortDropDown () {
         super.waitForVisibility(this.sortDropDown);
         super.clickElement(this.sortDropDown);
     }
 
+    /**
+     * this method selects the option to sort the products in alphabetical order
+     */
     public void selectOrder () {
         Select select = new Select(this.sortDropDown);
         select.selectByVisibleText("Name (A - Z)");
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
-     * verifies if the welcome text is properly displayed
-     * @return true if the welcome text is displayed, false otherwise
+     * click on the shopping cart icon
      */
-    public boolean verifyWelcomeText () {
-        String userName = configLoader.getUserName();
-        super.waitForVisibility(this.loggedInIcon);
-        String actualText = loggedInIcon.getText();
-        return actualText.equals("Welcome, User "+ userName+"!");
+    public void clickShoppingCartIcon () {
+        super.waitForVisibility(shoppingCarIcon);
+        this.clickElement(shoppingCarIcon);
     }
 
     /**
-     * scrolls to the title of hot sellers
+     * clicks on the home page icon
      */
-    public void scrollToHotSellers () {
-        super.scrollToElement(hotSellersTitle);
+    public void clickHomePageIcon () {
+        super.clickElement(homePageIcon);
     }
 
-
-    /**
-     * Checks the visibility of all specified elements on the product page.
-     * @return A list of element names that are not displayed.
-     */
-
-    public List<String> checkElementsVisibility() {
-        Map<String, WebElement> elementsMap = new HashMap<>();
-        elementsMap.put("productItemName", productItemName);
-        elementsMap.put("ratingSummary", ratingSummary);
-        elementsMap.put("reviewsActions", reviewsActions);
-        elementsMap.put("itemPrice", itemPrice);
-        elementsMap.put("itemSize", itemSize);
-        elementsMap.put("itemColor", itemColor);
-
-        List<String> notDisplayedElements = new ArrayList<>();
-
-        for (Map.Entry<String, WebElement> entry : elementsMap.entrySet()) {
-            if (!isElementDisplayed(entry.getValue())) {
-                notDisplayedElements.add(entry.getKey());
-            }
-        }
-
-        return notDisplayedElements;
-    }
-    /**
-     * Checks if a given web element is displayed.
-     *
-     * @param element The web element to check.
-     * @return True if the element is displayed, False otherwise.
-     */
-
-    private boolean isElementDisplayed(WebElement element) {
-        try {
-            return element.isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * clicks on the woman dropdown
-     */
-    public void clickWomenDropDown () {
-        super.mouseOver(this.womenDropDown);
-    }
-
-    public void clickTopsDropDown () {
-        super.mouseOver(this.topsDropDown);
-    }
-
-    public void clickWomenJackets () {
-        super.mouseOver(this.womenJacketsOption);
-        super.clickElement(this.womenJacketsOption);
-    }
 }

@@ -11,6 +11,7 @@ import pageObjects.*;
 
 import java.util.List;
 
+
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -18,11 +19,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ToolShopStepsDefinitions {
     private HomePage homePage;
     LoginPage loginPage = new LoginPage(WebHooks.getDriver());
-    private JacketsPage jacketsPage = new JacketsPage(WebHooks.getDriver());
     private ProductPage productPage = new ProductPage(WebHooks.getDriver());
-    private MyAccount myAccount = new MyAccount(WebHooks.getDriver());;
-
-
+    private MyAccount myAccount = new MyAccount(WebHooks.getDriver());
+    private RegisterAccount registerAccount = new RegisterAccount(WebHooks.getDriver());
+    private ShoppingCart shoppingCart = new ShoppingCart(WebHooks.getDriver());
 
     @Given("I am in the home page")
     public void iAmInTheHomePage() {
@@ -44,10 +44,6 @@ public class ToolShopStepsDefinitions {
         Assert.assertEquals("My account",myAccount.getTitle());
     }
 
-    @When("I scroll to the hot sellers section")
-    public void scrollToHotSellers () {
-        homePage.scrollToHotSellers();
-    }
 
     @Then("9 products should be displayed")
     public void countHotSellersItems () {
@@ -107,78 +103,106 @@ public class ToolShopStepsDefinitions {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @Then("the hot sellers items should have all their information displayed")
-    public void verifyHotSellersItemsInformation () {
-        List<String> notDisplayedElements = homePage.checkElementsVisibility();
-        assertTrue("The following elements are not displayed: " + notDisplayedElements, notDisplayedElements.isEmpty());
-    }
-
     @Given("I am logged in the website")
     public void loggedUser () {
         homePage = new HomePage(WebHooks.getDriver());
-        homePage.clickSignIn();
         loginPage.sendLoginInfo();
-        homePage.verifyWelcomeText();
+
     }
 
-    @When("I click on the woman dropdown")
-    public void clickOnWomanDropDown () {
-        homePage.clickWomenDropDown();
-    }
-
-    @When("I click on the tops dropdown")
-    public void clickOnTopsDropDown () {
-        homePage.clickTopsDropDown();
-    }
-
-    @When("I click on the jackets option")
-    public void clickOnWomanJackets () {
-        homePage.clickWomenJackets();
-    }
-
-    @When("I add the first jacket to the shopping cart")
-    public void addJacketToShoppingCart () {
-        jacketsPage.clickItemByIndex(0);
-    }
 
     @When("I click Add to Cart")
     public void clickAddToCart() {
         productPage.clickAddToCart();
     }
 
-    @When("I choose a color")
-    public void chooseColor() {
-        productPage.chooseColor();
+
+    @When("I click on the product")
+    public void iClickOnTheProduct(){
+        //Thread.sleep(5000);
+        homePage.clickProductByTitle();
     }
 
-    @Then("The errors about size and color being required should be visible")
-    public void areErrorsVisible() {
-        boolean areErrorsVisible = productPage.areErrorsVisible();
-        assertTrue("One or both error messages are not visible.", areErrorsVisible);
+    @Then("The title, product image, description, price, input quantity and add to favourites should be visible")
+    public void theTitleProductImageDescriptionPriceInputQuantityAndAddToFavouritesShouldBeVisible() {
+        List<String> notDisplayedElements = productPage.checkElementsVisibility();
+        assertTrue("The following elements are not displayed: " + notDisplayedElements, notDisplayedElements.isEmpty());
     }
 
+    @Then("The pop-up showing the product was added to the shopping cart should be visible")
+    public void thePopUpShouldBeVisible() {
+        productPage.isPopUpVisible();
+
+    }
+
+    @And("I click on the shopping cart icon")
+    public void iClickOnTheShoppingCartIcon() {
+        homePage.clickShoppingCartIcon();
+    }
+
+    @And("The item, quantity, price and total should be visible")
+    public void theItemQuantityPriceAndTotalAreVisible() {
+        List<String> notDisplayedElements = shoppingCart.checkElementsVisibility();
+        assertTrue("The following elements are not displayed: " + notDisplayedElements, notDisplayedElements.isEmpty());
 
 
+    }
+
+    @When("I click the register link")
+    public void iClickTheRegisterLink() {
+        loginPage.clickRegisterLink();
+
+    }
+
+    @And("I fill the registration form")
+    public void iFillTheRegistrationForm() {
+        registerAccount.IFillTheRegisterInformation();
+    }
+
+    @Then("I am already logged in")
+    public void iAmAlreadyLoggedIn() {
+        loginPage.loginProcess();
+    }
+
+    @And("I click proceed to checkout")
+    public void iClickProceedToCheckout() {
+        shoppingCart.clickProceedToCheckout();
+    }
+
+    @And("In the sing in step I click in the second proceed to checkout")
+    public void inTheSingInStepIClickInTheSecondProceedToCheckout() {
+        shoppingCart.clickProceedToCheckoutTwo();
+    }
+
+    @And("in the payment select I choose credit card")
+    public void inThePaymentSelectIChooseCreditCard() {
+        shoppingCart.selectPayment();
+
+    }
+
+    @And("in the billing address step I click in the third proceed to checkout")
+    public void inTheBillingAddressStepIClickInTheThirdProceedToCheckout() {
+        shoppingCart.clickProceedToCheckoutThree();
+    }
+
+    @And("I fill the credit card information")
+    public void iFillTheCreditCardInformation() {
+        shoppingCart.fillCreditCardInformation();
+    }
+
+    @Then("the successful payment message should be displayed")
+    public void theSuccessfulPaymentMessageShouldBeDisplayed() {
+        assertTrue("The successful payment message wast not displayed", shoppingCart.isPaymentSuccessDisplayed());
+    }
+
+    @And("I click in the button to delete a product")
+    public void iClickInTheButtonToDeleteAProduct() {
+        shoppingCart.clickDeleteProduct();
+    }
+
+    @Then("The item, quantity, price and total should not be visible")
+    public void areItemsNotVisible() {
+        List<String> DisplayedElements = shoppingCart.checkElementsNotVisibility();
+        assertTrue("The following elements are displayed: " + DisplayedElements, DisplayedElements.isEmpty());
+    }
 }

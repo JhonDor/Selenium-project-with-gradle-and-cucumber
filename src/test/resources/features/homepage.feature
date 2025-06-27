@@ -1,5 +1,5 @@
 @webAutomation @homepage
-Feature: Example feature
+Feature: Verify the elements of the front page
 
 
   Scenario: Verify products are properly displayed in the home page
@@ -18,7 +18,7 @@ Feature: Example feature
 
 
   @testing
-  Scenario: Verify the search bar is working
+  Scenario: Verify the sorting in alphabetical order is working
     Given I am in the home page
     When I sort the products by alphabetical order
     Then All products should be in alphabetical order

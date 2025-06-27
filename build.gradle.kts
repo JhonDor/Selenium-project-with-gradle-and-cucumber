@@ -25,6 +25,7 @@ dependencies {
     testImplementation("io.cucumber:cucumber-junit-platform-engine")
     testImplementation("org.junit.platform:junit-platform-suite")
     testImplementation("org.assertj:assertj-core")
+    testImplementation("com.github.javafaker:javafaker:1.0.2")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

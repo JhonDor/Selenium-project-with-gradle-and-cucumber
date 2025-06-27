@@ -9,53 +9,90 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ProductPage extends BasePage{
+public class ProductPage extends BasePage {
     public ProductPage(WebDriver driver) {
         super(driver);
     }
 
-    @FindBy(css = ".action.primary.tocart")
+    @FindBy(id = "btn-add-to-cart")
     private WebElement addToCartButton;
 
-    @FindBy(id = "super_attribute[143]-error")
-    private WebElement missingSizeError;
+    @FindBy(css = "[data-test=\"product-name\"]")
+    private WebElement productTitle;
 
-    @FindBy(id = "super_attribute[93]-error")
-    private WebElement missingColorError;
+    @FindBy(css = ".figure-img.img-fluid")
+    private WebElement productImage;
 
-    @FindBy(id = "option-label-color-93-item-49")
-    private WebElement color;
+    @FindBy(css = ".input-group.quantity")
+    private WebElement inputQuantity;
 
+    @FindBy(id = "btn-add-to-favorites")
+    private WebElement addToFavourites;
 
-    public void clickAddToCart () {
+    @FindBy(css = "span[data-test=\"unit-price\"]")
+    private WebElement unitPrice;
+
+    @FindBy(id = "description")
+    private WebElement productDescription;
+
+    @FindBy(id = "toast-container")
+    private WebElement addedToCartPopUp;
+
+    /**
+     * clicks on the add to cart button
+     */
+    public void clickAddToCart() {
         super.clickElement(this.addToCartButton);
+
     }
 
     /**
-     * Verifies the visibility of both {@code missingSizeError} and {@code missingColorError} elements.
-     * This method checks if both elements are displayed on the webpage. If both are visible, it returns true.
-     * If either element is not visible, it logs a message indicating which element is not visible and returns false.
-     *
-     * @return true if both elements are visible, false otherwise.
+     * this method verifies the visibility of all the elements related to the product
+     * @return the list of not displayed elements
      */
-    public boolean areErrorsVisible() {
-        boolean isSizeErrorVisible = missingSizeError.isDisplayed();
-        boolean isColorErrorVisible = missingColorError.isDisplayed();
+    public List<String> checkElementsVisibility() {
+        super.waitForVisibility(addToCartButton);
+        Map<String, WebElement> elementsMap = new HashMap<>();
+        elementsMap.put("productTitle", productTitle);
+        elementsMap.put("productImage", productImage);
+        elementsMap.put("unitPrice", unitPrice);
+        elementsMap.put("productDescription", productDescription);
+        elementsMap.put("inputQuantity", inputQuantity);
+        elementsMap.put("addToCartButton", addToCartButton);
+        elementsMap.put("addToFavourites", addToFavourites);
 
-        if (isSizeErrorVisible && isColorErrorVisible) {
-            return true;
-        } else {
-            if (!isSizeErrorVisible) {
-                System.out.println("missingSizeError element is not visible.");
+        List<String> notDisplayedElements = new ArrayList<>();
+
+        for (Map.Entry<String, WebElement> entry : elementsMap.entrySet()) {
+            if (!isElementDisplayed(entry.getValue())) {
+                notDisplayedElements.add(entry.getKey());
             }
-            if (!isColorErrorVisible) {
-                System.out.println("missingColorError element is not visible.");
-            }
+        }
+
+        return notDisplayedElements;
+    }
+
+    /**
+     * Checks if a given web element is displayed.
+     *
+     * @param element The web element to check.
+     * @return True if the element is displayed, False otherwise.
+     */
+
+    private boolean isElementDisplayed(WebElement element) {
+        try {
+            return element.isDisplayed();
+        } catch (Exception e) {
             return false;
         }
     }
 
-    public void chooseColor () {
-        super.clickElement(this.color);
+    /**
+     * this method verifies if the pop up of product added to the shopping cart is visible
+     */
+    public void isPopUpVisible () {
+        super.waitForVisibility(addedToCartPopUp);
+        this.addedToCartPopUp.isDisplayed();
     }
 }
+
