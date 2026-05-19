@@ -1,12 +1,13 @@
 @webAutomation @shoppingCart
 Feature: Shopping Cart
 
-  Background:
-    Given I am already logged in
+  
 
   @shoppingCart1
   Scenario: Successfully complete a purchase
     Given I am in the home page
+    When I click in sing in
+    When I log in
     When I search for "combination pliers" in the search bar
     And All the products should be "Combination Pliers"
     * I click on the product
@@ -23,6 +24,8 @@ Feature: Shopping Cart
   @shoppingCart2
   Scenario: Delete a product from the shopping cart
     Given I am in the home page
+    When I click in sing in
+    When I log in 
     When I search for "combination pliers" in the search bar
     And All the products should be "Combination Pliers"
     * I click on the product
