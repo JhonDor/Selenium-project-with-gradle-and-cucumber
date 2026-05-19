@@ -1,0 +1,15 @@
+{
+    "coda.advancedSettings": {
+        "backendPort": 56660,
+        "headersTimeout": 0,
+        "bodyTimeout": 0
+    },
+  
+  "cucumber.glue": [
+    "src/test/java/stepDefinitions"
+  ],
+  "cucumber.features": [
+    "src/test/resources/features"
+  ]
+   
+}

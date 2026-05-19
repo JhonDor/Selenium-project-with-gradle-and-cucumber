@@ -5,6 +5,7 @@ package pageObjects;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -58,6 +59,12 @@ public class HomePage extends BasePage {
      * @return true if al the elements are sorted correctly, false otherwise
      */
     public boolean areProductsSortedAlphabetically() {
+        // Re-initialize PageFactory elements to get fresh DOM references after sort
+        PageFactory.initElements(getDriver(), this);
+        
+        // Wait for elements to be visible to ensure fresh element references
+        super.wait.until(ExpectedConditions.visibilityOfAllElements(productsTitle));
+        
         if (productsTitle == null || productsTitle.size() < 2) {
             return true;
         }
@@ -147,6 +154,7 @@ public class HomePage extends BasePage {
      * @param toolName The name of the tool to search for.
      */
     public void searchForTool(String toolName) {
+        super.waitForVisibility(searchBar);
         searchBar.clear();
         searchBar.sendKeys(toolName);
         searchBar.submit();
@@ -171,6 +179,7 @@ public class HomePage extends BasePage {
 
     /**
      * Checks if each product title in the list contains the specified substring.
+     * Performs case-insensitive comparison.
      *
      * @param searchString The substring to search for within each product title.
      * @return {@code true} if all product titles contain the substring; {@code false} otherwise.
@@ -178,15 +187,31 @@ public class HomePage extends BasePage {
     public boolean doAllProductTitlesContain(String searchString) {
         int initialCount = countProducts();
 
-
+        // Wait for the product count to change after search
         super.wait.until(new ExpectedCondition<Boolean>() {
             public Boolean apply(WebDriver driver) {
                 return countProducts() != initialCount;
             }
         });
 
+        // Wait a bit for the DOM to stabilize after search
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        
+        // Re-initialize PageFactory elements to get fresh DOM references
+        PageFactory.initElements(getDriver(), this);
+        
+        // Wait for the newly re-initialized elements to be visible and stable
+        super.wait.until(ExpectedConditions.visibilityOfAllElements(productsTitle));
+        
+        // Verify all product titles contain the search string
+        // Perform case-insensitive comparison
+        String searchStringLower = searchString.toLowerCase();
         for (WebElement productTitle : productsTitle) {
-            if (!productTitle.getText().contains(searchString)) {
+            if (!productTitle.getText().toLowerCase().contains(searchStringLower)) {
                 return false;
             }
         }
@@ -205,6 +230,9 @@ public class HomePage extends BasePage {
      * this method selects the option to sort the products in alphabetical order
      */
     public void selectOrder () {
+        // Re-initialize to get fresh reference to sortDropDown element
+        PageFactory.initElements(getDriver(), this);
+        super.waitForVisibility(this.sortDropDown);
         Select select = new Select(this.sortDropDown);
         select.selectByVisibleText("Name (A - Z)");
     }

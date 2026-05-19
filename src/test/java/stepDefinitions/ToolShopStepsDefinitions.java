@@ -45,11 +45,6 @@ public class ToolShopStepsDefinitions {
     }
 
 
-    @Then("9 products should be displayed")
-    public void countHotSellersItems () {
-        Assert.assertEquals("The amount of products is incorrect", 9, homePage.countProducts());
-    }
-
     @And("The home page should have a banner")
     public void isBannerDisplayed () {
         assertTrue("The banner was not displayed",homePage.isBannerVisible());

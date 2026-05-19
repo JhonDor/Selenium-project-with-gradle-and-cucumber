@@ -1,7 +1,7 @@
-@webAutomation @login
+@webAutomation @register
 Feature: Login feature
 
-
+  @register
   Scenario: Register a new user
     Given I am in the home page
     When I click in sing in

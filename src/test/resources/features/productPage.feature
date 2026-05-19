@@ -1,6 +1,7 @@
-@webAutomation
+@webAutomation @productPage
 Feature: Product page
 
+  @productPage1
   Scenario:
     Given I am in the home page
     When I search for "combination pliers" in the search bar
@@ -8,7 +9,7 @@ Feature: Product page
     And I click on the product
     Then The title, product image, description, price, input quantity and add to favourites should be visible
 
-
+  @productPage2
   Scenario:
     Given I am in the home page
     When I search for "combination pliers" in the search bar
