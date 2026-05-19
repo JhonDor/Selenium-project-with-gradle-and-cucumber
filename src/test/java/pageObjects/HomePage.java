@@ -321,11 +321,22 @@ public class HomePage extends BasePage {
         select.selectByVisibleText("Name (A - Z)");
         System.out.println("Sort option selected");
         
-        // Wait for the products to be re-sorted (the first product should change)
+        // Add explicit wait after sort selection - give the backend time to process
+        try {
+            Thread.sleep(1000); // Give the backend time to process the sort request
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        
+        // Wait for the products to be re-sorted (the first product should change OR stabilize)
         // This ensures the sorting operation has completed
         final String initialFirstProduct = firstProductBeforeSort;
         try {
+            System.out.println("Waiting for products to be sorted...");
             super.wait.until(new ExpectedCondition<Boolean>() {
+                private int checksWithoutChange = 0;
+                private String lastProduct = "";
+                
                 public Boolean apply(WebDriver driver) {
                     try {
                         PageFactory.initElements(getDriver(), HomePage.this);
@@ -333,28 +344,55 @@ public class HomePage extends BasePage {
                             return false;
                         }
                         String currentFirst = productsTitle.get(0).getText();
-                        // If we had an initial product and it's different now, sorting is done
+                        System.out.println("  Current first product: " + currentFirst);
+                        
+                        // Check if products have changed from initial
                         if (!initialFirstProduct.isEmpty() && !currentFirst.equals(initialFirstProduct)) {
+                            System.out.println("  Product changed! Sort operation appears complete.");
                             return true;
                         }
-                        // If we didn't have an initial product, just ensure products are loaded
-                        return !currentFirst.isEmpty();
+                        
+                        // If no initial product, check for any product and stability
+                        if (initialFirstProduct.isEmpty()) {
+                            if (!currentFirst.isEmpty()) {
+                                // Check if product title is stable (not changing)
+                                if (currentFirst.equals(lastProduct)) {
+                                    checksWithoutChange++;
+                                    if (checksWithoutChange >= 2) {
+                                        System.out.println("  Product stable. Sort operation appears complete.");
+                                        return true;
+                                    }
+                                } else {
+                                    checksWithoutChange = 0;
+                                }
+                                lastProduct = currentFirst;
+                            }
+                        }
+                        return false;
                     } catch (Exception e) {
+                        System.out.println("  Exception during wait: " + e.getMessage());
                         return false;
                     }
                 }
             });
         } catch (Exception e) {
-            // If wait times out, continue anyway - the sort may have completed
-            System.out.println("Warning: Sort operation may not have completed, but continuing with verification");
+            // If wait times out, add a longer static wait and continue
+            System.out.println("Warning: Sort operation may not have completed immediately. Adding static wait...");
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+            }
         }
         
         // Additional wait to ensure all product elements are stable
         try {
+            System.out.println("Waiting for all product elements to be visible...");
             PageFactory.initElements(getDriver(), this);
             super.wait.until(ExpectedConditions.visibilityOfAllElements(productsTitle));
+            System.out.println("All products are now visible.");
         } catch (Exception e) {
-            // Continue if elements are visible
+            System.out.println("Could not verify all products visible, but continuing...");
         }
     }
 
