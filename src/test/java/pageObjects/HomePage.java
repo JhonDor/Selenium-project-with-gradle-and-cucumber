@@ -77,6 +77,7 @@ public class HomePage extends BasePage {
         });
         
         if (stableCount < 2) {
+            System.out.println("Only " + stableCount + " product(s) found. Skipping sort verification.");
             return true;
         }
 
@@ -95,23 +96,34 @@ public class HomePage extends BasePage {
             } catch (org.openqa.selenium.StaleElementReferenceException e) {
                 if (retryCount < 2) {
                     try {
-                        Thread.sleep(100); // Brief pause before retry
+                        Thread.sleep(200); // Longer pause before retry
                     } catch (InterruptedException ie) {
                         Thread.currentThread().interrupt();
                     }
                 } else {
+                    System.out.println("Failed to extract product titles after " + (retryCount + 1) + " retries");
                     throw e; // Rethrow if all retries exhausted
                 }
             }
         }
 
+        // Log the products for debugging
+        System.out.println("Products extracted for sort verification: " + titles.size() + " products");
+        for (int i = 0; i < titles.size(); i++) {
+            System.out.println("  [" + i + "] " + titles.get(i));
+        }
+
         // Verify all titles are in alphabetical order
         for (int i = 1; i < titles.size(); i++) {
-            if (titles.get(i - 1).compareTo(titles.get(i)) > 0) {
+            int comparison = titles.get(i - 1).compareTo(titles.get(i));
+            if (comparison > 0) {
+                System.out.println("Sort order violation at index " + (i - 1) + "-" + i + 
+                    ": '" + titles.get(i - 1) + "' > '" + titles.get(i) + "'");
                 return false;
             }
         }
 
+        System.out.println("All " + titles.size() + " products are in alphabetical order");
         return true;
     }
 
@@ -296,14 +308,18 @@ public class HomePage extends BasePage {
             PageFactory.initElements(getDriver(), this);
             if (!productsTitle.isEmpty()) {
                 firstProductBeforeSort = productsTitle.get(0).getText();
+                System.out.println("First product before sort: " + firstProductBeforeSort);
             }
         } catch (Exception e) {
             // Continue even if we can't get the initial title
+            System.out.println("Warning: Could not retrieve first product before sort");
         }
         
         // Select the sort option
+        System.out.println("Selecting 'Name (A - Z)' sort option...");
         Select select = new Select(this.sortDropDown);
         select.selectByVisibleText("Name (A - Z)");
+        System.out.println("Sort option selected");
         
         // Wait for the products to be re-sorted (the first product should change)
         // This ensures the sorting operation has completed
