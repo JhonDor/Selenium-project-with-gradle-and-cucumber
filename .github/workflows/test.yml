@@ -24,7 +24,12 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y google-chrome-stable
+          which google-chrome
           google-chrome --version
+          
+      - name: Install additional dependencies
+        run: |
+          sudo apt-get install -y libxss1 libappindicator1 libindicator7
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
@@ -33,7 +38,7 @@ jobs:
         run: ./gradlew build
 
       - name: Run Cucumber tests
-        run: ./gradlew cucumber -PcucumberTag="@webAutomation and not @register" -DheadlessMode=true
+        run: ./gradlew cucumber -PcucumberTag="@webAutomation and not @register"
 
       - name: Upload test reports
         if: always()
