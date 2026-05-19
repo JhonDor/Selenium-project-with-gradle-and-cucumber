@@ -125,11 +125,12 @@ public class HomePage extends BasePage {
     }
 
     /**
-     * clicks in the sig in button
+     * Clicks the "Sign in" link in the navigation menu
+     * Element: <a data-test="nav-sign-in" routerlink="/auth/login">Sign in</a>
      */
-    public void clickSignIn (){
-        super.clickElement(this.sigIn);
-        new LoginPage(getDriver());
+    public void clickSignIn() {
+        super.waitForVisibility(sigIn);
+        super.clickElement(sigIn);
     }
     /**
      * Counts the amount of products in the homepage
