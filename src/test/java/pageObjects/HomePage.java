@@ -76,21 +76,40 @@ public class HomePage extends BasePage {
             }
         });
         
-        // Final re-initialize to ensure we have the most current elements
-        PageFactory.initElements(getDriver(), this);
-        
-        if (productsTitle == null || productsTitle.size() < 2) {
+        if (stableCount < 2) {
             return true;
         }
 
-        String previousTitle = productsTitle.get(0).getText().toLowerCase();
+        // Extract all titles immediately after PageFactory init to avoid stale elements
+        // Use retry logic to handle stale element exceptions during text extraction
+        List<String> titles = new ArrayList<>();
+        for (int retryCount = 0; retryCount < 3; retryCount++) {
+            try {
+                // Re-initialize right before accessing elements
+                PageFactory.initElements(getDriver(), this);
+                titles.clear();
+                for (WebElement title : productsTitle) {
+                    titles.add(title.getText().toLowerCase());
+                }
+                break; // Success - exit retry loop
+            } catch (org.openqa.selenium.StaleElementReferenceException e) {
+                if (retryCount < 2) {
+                    try {
+                        Thread.sleep(100); // Brief pause before retry
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                    }
+                } else {
+                    throw e; // Rethrow if all retries exhausted
+                }
+            }
+        }
 
-        for (int i = 1; i < productsTitle.size(); i++) {
-            String currentTitle = productsTitle.get(i).getText().toLowerCase();
-            if (previousTitle.compareTo(currentTitle) > 0) {
+        // Verify all titles are in alphabetical order
+        for (int i = 1; i < titles.size(); i++) {
+            if (titles.get(i - 1).compareTo(titles.get(i)) > 0) {
                 return false;
             }
-            previousTitle = currentTitle;
         }
 
         return true;
