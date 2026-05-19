@@ -25,6 +25,9 @@ public class RegisterAccount extends BasePage{
     @FindBy(id = "street")
     private WebElement street;
 
+    @FindBy(id = "house_number")
+    private WebElement houseNumber;
+
     @FindBy(id = "postal_code")
     private WebElement postalCode;
 
@@ -60,6 +63,7 @@ public class RegisterAccount extends BasePage{
         super.typeOnInput(lastName,("Testing"));
         super.typeOnInput(dateOfBirth,("01/01/2000"));
         super.typeOnInput(street,("calle falsa 123"));
+        super.typeOnInput(houseNumber,("1234"));
         super.typeOnInput(postalCode,("1234"));
         super.typeOnInput(city,("city"));
         super.typeOnInput(state,("state"));
@@ -71,4 +75,3 @@ public class RegisterAccount extends BasePage{
         super.clickElement(registerButton);
     }
 }
-
