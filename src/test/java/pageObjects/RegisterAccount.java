@@ -61,7 +61,7 @@ public class RegisterAccount extends BasePage{
         super.waitForVisibility(firstName);
         super.typeOnInput(firstName,("Testing"));
         super.typeOnInput(lastName,("Testing"));
-        super.typeOnInput(dateOfBirth,("2000/01/01"));
+        super.typeOnInput(dateOfBirth,("2000-03-02"));
         super.typeOnInput(street,("calle falsa 123"));
         super.typeOnInput(postalCode,("1234"));
         super.typeOnInput(houseNumber,("1234"));

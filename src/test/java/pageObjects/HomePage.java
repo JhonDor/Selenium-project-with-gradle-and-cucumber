@@ -194,14 +194,20 @@ public class HomePage extends BasePage {
             }
         });
 
-        // Wait a bit for the DOM to stabilize after search
+        // Re-initialize PageFactory elements to get fresh DOM references
+        PageFactory.initElements(getDriver(), this);
+        
+        // Wait for the old product titles to become stale and be replaced with new ones
+        // This is a more reliable dynamic wait than Thread.sleep()
         try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+            if (!productsTitle.isEmpty()) {
+                super.wait.until(ExpectedConditions.stalenessOf(productsTitle.get(0)));
+            }
+        } catch (Exception e) {
+            // Element might not become stale if the list is recreated, continue anyway
         }
         
-        // Re-initialize PageFactory elements to get fresh DOM references
+        // Re-initialize again after staleness to get the fresh elements
         PageFactory.initElements(getDriver(), this);
         
         // Wait for the newly re-initialized elements to be visible and stable
