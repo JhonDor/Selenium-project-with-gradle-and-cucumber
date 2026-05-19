@@ -36,10 +36,26 @@ public class LoginPage extends BasePage {
     ConfigLoader configLoader = new ConfigLoader();
 
     /**
+     * Waits for the login page to be fully loaded and ready
+     */
+    public void waitForLoginPageToLoad() {
+        try {
+            // Wait for the login title to be visible (indicates page is ready)
+            super.waitForVisibility(loginTitle);
+        } catch (org.openqa.selenium.TimeoutException e) {
+            // If the title element is not found, try waiting for the email input as fallback
+            System.out.println("Login title not found, waiting for email input field instead");
+            super.waitForVisibility(email);
+        }
+    }
+
+    /**
     This method sends the keys to log in
      */
     public void sendLoginInfo () {
-        super.waitForVisibility(loginTitle);
+        // Wait for login page to be ready before filling the form
+        waitForLoginPageToLoad();
+        
         String password = configLoader.getPassword();
         String randomEmail = EmailGenerator.getRandomEmail();
 
