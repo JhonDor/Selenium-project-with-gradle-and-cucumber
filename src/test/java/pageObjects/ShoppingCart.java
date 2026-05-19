@@ -39,6 +39,9 @@ public class ShoppingCart extends BasePage{
     @FindBy(css = "[data-test=\"proceed-3\"]")
     private WebElement proceedToCheckoutThree;
 
+    @FindBy(id = "house_number")
+    private WebElement houseNumber;
+
     @FindBy(id = "payment-method")
     private WebElement selectPayment;
 
@@ -81,9 +84,10 @@ public class ShoppingCart extends BasePage{
     }
 
     /**
-     * clicks on the third proceed to checkout button
+     * types house number and clicks on the third proceed to checkout button
      */
     public void clickProceedToCheckoutThree () {
+        super.typeOnInput(houseNumber, "1234");
         super.clickElement(proceedToCheckoutThree);
     }
 
