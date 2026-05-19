@@ -20,16 +20,12 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Install Chrome
+      - name: Install Chrome and dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
+          sudo apt-get install -y google-chrome-stable xvfb
           which google-chrome
           google-chrome --version
-          
-      - name: Install additional dependencies
-        run: |
-          sudo apt-get install -y libxss1 libappindicator1 libindicator7
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
@@ -38,7 +34,7 @@ jobs:
         run: ./gradlew build
 
       - name: Run Cucumber tests
-        run: ./gradlew cucumber -PcucumberTag="@webAutomation and not @register"
+        run: xvfb-run --auto-servernum ./gradlew cucumber -PcucumberTag="@webAutomation and not @register"
 
       - name: Upload test reports
         if: always()
@@ -47,9 +43,9 @@ jobs:
           name: cucumber-reports
           path: build/reports/cucumber
 
-      - name: Publish test results
-        if: always()
-        uses: EnricoMi/publish-unit-test-result-action@v2
+      - name: Upload test logs
+        if: failure()
+        uses: actions/upload-artifact@v4
         with:
-          files: build/reports/cucumber/**/*.xml
-          check_name: Test Results
+          name: test-logs
+          path: build/

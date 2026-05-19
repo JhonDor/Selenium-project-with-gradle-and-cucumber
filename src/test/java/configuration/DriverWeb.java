@@ -16,36 +16,48 @@ public class DriverWeb {
         /**
          * Constructor method.
          * Only Chrome browser is defined.
-         * Supports headless mode via environment detection for CI/CD environments.
+         * Supports CI/CD environments with automatic configuration.
          */
         public DriverWeb() {
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--incognito");
             
-            // Detect if running in CI/CD environment (GitHub Actions, Jenkins, etc.)
-            boolean isCI = System.getenv("CI") != null || 
-                          System.getenv("GITHUB_ACTIONS") != null ||
-                          System.getProperty("headlessMode") != null;
+            // Detect if running in CI/CD environment
+            boolean isCI = isRunningInCI();
             
-            // Enable headless mode for CI environments
+            // Configure options based on environment
             if (isCI) {
-                options.addArguments("--headless=new");
+                // CI environment configuration
                 options.addArguments("--no-sandbox");
                 options.addArguments("--disable-dev-shm-usage");
                 options.addArguments("--disable-gpu");
                 options.addArguments("--window-size=1920,1080");
                 options.addArguments("--disable-software-rasterizer");
                 options.addArguments("--disable-extensions");
+                options.addArguments("--disable-default-apps");
                 
-                // Try to use system Chrome if available in CI environment
+                // Try to use system Chrome executable
                 String chromeExecutable = findChromeExecutable();
                 if (chromeExecutable != null) {
                     options.setBinary(chromeExecutable);
+                    System.out.println("Using Chrome executable: " + chromeExecutable);
                 }
             }
             
+            // Setup driver
             WebDriverManager.chromedriver().setup();
             this.driver = new ChromeDriver(options);
+        }
+
+        /**
+         * Check if running in CI environment
+         */
+        private boolean isRunningInCI() {
+            return System.getenv("CI") != null || 
+                   System.getenv("GITHUB_ACTIONS") != null ||
+                   System.getenv("JENKINS_HOME") != null ||
+                   System.getenv("GITLAB_CI") != null ||
+                   System.getenv("CIRCLECI") != null;
         }
 
         /**
@@ -57,17 +69,19 @@ public class DriverWeb {
                 "/usr/bin/google-chrome-stable",
                 "/usr/bin/chromium",
                 "/usr/bin/chromium-browser",
-                "/snap/bin/chromium"
+                "/snap/bin/chromium",
+                "/opt/google/chrome/chrome"
             };
             
             for (String path : possiblePaths) {
                 java.io.File file = new java.io.File(path);
                 if (file.exists()) {
-                    System.out.println("Found Chrome executable: " + path);
                     return path;
                 }
             }
             
+            // If not found, return null and let WebDriverManager handle it
+            System.out.println("Chrome executable not found in common locations. Using WebDriverManager.");
             return null;
         }
 
