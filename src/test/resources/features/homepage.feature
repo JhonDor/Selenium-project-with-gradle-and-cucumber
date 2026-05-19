@@ -1,4 +1,4 @@
-@webAutomation @homepage
+@webAutomation @homePage
 Feature: Verify the elements of the front page
 
   @homePage1

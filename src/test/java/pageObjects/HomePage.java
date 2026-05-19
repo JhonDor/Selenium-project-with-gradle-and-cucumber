@@ -65,6 +65,20 @@ public class HomePage extends BasePage {
         // Wait for elements to be visible to ensure fresh element references
         super.wait.until(ExpectedConditions.visibilityOfAllElements(productsTitle));
         
+        // Wait for the DOM to stabilize by ensuring the product count remains stable
+        // This prevents stale element reference errors
+        int stableCount = productsTitle.size();
+        super.wait.until(new ExpectedCondition<Boolean>() {
+            public Boolean apply(WebDriver driver) {
+                // Re-fetch to check if count is still the same (indicating stability)
+                PageFactory.initElements(getDriver(), HomePage.this);
+                return productsTitle.size() == stableCount;
+            }
+        });
+        
+        // Final re-initialize to ensure we have the most current elements
+        PageFactory.initElements(getDriver(), this);
+        
         if (productsTitle == null || productsTitle.size() < 2) {
             return true;
         }
