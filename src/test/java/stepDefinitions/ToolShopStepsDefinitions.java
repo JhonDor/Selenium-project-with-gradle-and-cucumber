@@ -39,6 +39,11 @@ public class ToolShopStepsDefinitions {
         loginPage.sendLoginInfo();
     }
 
+    @When("I log in")
+    public void iLogIn() {
+        loginPage.sendLoginInfoWithConfigEmail();
+    }
+
     @Then("The My account should be visible")
     public void verifyLogIn () {
         Assert.assertEquals("My account",myAccount.getTitle());
