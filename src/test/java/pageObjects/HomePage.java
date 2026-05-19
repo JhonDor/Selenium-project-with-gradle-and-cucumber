@@ -268,13 +268,63 @@ public class HomePage extends BasePage {
 
     /**
      * this method selects the option to sort the products in alphabetical order
+     * and waits for the products list to be re-sorted
      */
     public void selectOrder () {
         // Re-initialize to get fresh reference to sortDropDown element
         PageFactory.initElements(getDriver(), this);
         super.waitForVisibility(this.sortDropDown);
+        
+        // Store the current first product title before sorting
+        String firstProductBeforeSort = "";
+        try {
+            PageFactory.initElements(getDriver(), this);
+            if (!productsTitle.isEmpty()) {
+                firstProductBeforeSort = productsTitle.get(0).getText();
+            }
+        } catch (Exception e) {
+            // Continue even if we can't get the initial title
+        }
+        
+        // Select the sort option
         Select select = new Select(this.sortDropDown);
         select.selectByVisibleText("Name (A - Z)");
+        
+        // Wait for the products to be re-sorted (the first product should change)
+        // This ensures the sorting operation has completed
+        final String initialFirstProduct = firstProductBeforeSort;
+        try {
+            super.wait.until(new ExpectedCondition<Boolean>() {
+                public Boolean apply(WebDriver driver) {
+                    try {
+                        PageFactory.initElements(getDriver(), HomePage.this);
+                        if (productsTitle.isEmpty()) {
+                            return false;
+                        }
+                        String currentFirst = productsTitle.get(0).getText();
+                        // If we had an initial product and it's different now, sorting is done
+                        if (!initialFirstProduct.isEmpty() && !currentFirst.equals(initialFirstProduct)) {
+                            return true;
+                        }
+                        // If we didn't have an initial product, just ensure products are loaded
+                        return !currentFirst.isEmpty();
+                    } catch (Exception e) {
+                        return false;
+                    }
+                }
+            });
+        } catch (Exception e) {
+            // If wait times out, continue anyway - the sort may have completed
+            System.out.println("Warning: Sort operation may not have completed, but continuing with verification");
+        }
+        
+        // Additional wait to ensure all product elements are stable
+        try {
+            PageFactory.initElements(getDriver(), this);
+            super.wait.until(ExpectedConditions.visibilityOfAllElements(productsTitle));
+        } catch (Exception e) {
+            // Continue if elements are visible
+        }
     }
 
     /**
