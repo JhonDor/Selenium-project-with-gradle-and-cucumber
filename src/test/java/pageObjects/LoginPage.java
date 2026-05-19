@@ -65,6 +65,22 @@ public class LoginPage extends BasePage {
     }
 
     /**
+     * Sends login credentials using email from config.properties
+     * Uses the email address defined in config.properties instead of a random email
+     */
+    public void sendLoginInfoWithConfigEmail() {
+        // Wait for login page to be ready before filling the form
+        waitForLoginPageToLoad();
+        
+        String email = configLoader.getEmail();
+        String password = configLoader.getPassword();
+
+        super.typeOnInput(this.email, email);
+        super.typeOnInput(this.password, password);
+        super.clickElement(this.loginButton);
+    }
+
+    /**
      * click on the register link
      */
     public void clickRegisterLink () {
