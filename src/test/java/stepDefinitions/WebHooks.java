@@ -6,6 +6,11 @@ import io.cucumber.java.Scenario;
 import configuration.DriverWeb;
 //import org.finalExamTae.utils.webtestdata.WebData;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.OutputType;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Class for Web automation hooks.
@@ -31,16 +36,34 @@ public class WebHooks {
     }
 
     /**
-     * After hook for closing the browser.
+     * After hook for taking screenshots on failure and closing the browser.
      */
     @After
     public void tearDown(Scenario scenario) {
         scenario.getSourceTagNames().forEach(tag -> {
             if (tag.equals("@webAutomation")) {
+                // Take screenshot on failure
+                if (scenario.isFailed()) {
+                    takeScreenshot(scenario);
+                }
                 driver.getDriver().quit();
             }
 
         });
+    }
+
+    /**
+     * Takes a screenshot and attaches it to the Cucumber report on test failure.
+     *
+     * @param scenario The current Cucumber scenario
+     */
+    private void takeScreenshot(Scenario scenario) {
+        try {
+            byte[] screenshot = ((TakesScreenshot) driver.getDriver()).getScreenshotAs(OutputType.BYTES);
+            scenario.attach(screenshot, "image/png", scenario.getName() + "_" + System.currentTimeMillis());
+        } catch (Exception e) {
+            System.err.println("Failed to take screenshot: " + e.getMessage());
+        }
     }
 
     /**
