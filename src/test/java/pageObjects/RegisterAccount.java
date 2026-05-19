@@ -61,10 +61,10 @@ public class RegisterAccount extends BasePage{
         super.waitForVisibility(firstName);
         super.typeOnInput(firstName,("Testing"));
         super.typeOnInput(lastName,("Testing"));
-        super.typeOnInput(dateOfBirth,("01/01/2000"));
+        super.typeOnInput(dateOfBirth,("2000/01/01"));
         super.typeOnInput(street,("calle falsa 123"));
-        super.typeOnInput(houseNumber,("1234"));
         super.typeOnInput(postalCode,("1234"));
+        super.typeOnInput(houseNumber,("1234"));
         super.typeOnInput(city,("city"));
         super.typeOnInput(state,("state"));
         Select select = new Select(this.country);

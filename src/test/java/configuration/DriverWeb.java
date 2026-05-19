@@ -1,6 +1,7 @@
 package configuration;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -31,7 +32,6 @@ public class DriverWeb {
                 options.addArguments("--no-sandbox");
                 options.addArguments("--disable-dev-shm-usage");
                 options.addArguments("--disable-gpu");
-                options.addArguments("--window-size=1920,1080");
                 options.addArguments("--disable-software-rasterizer");
                 options.addArguments("--disable-extensions");
                 options.addArguments("--disable-default-apps");
@@ -44,9 +44,21 @@ public class DriverWeb {
                 }
             }
             
+            // Set window size for all environments
+            options.addArguments("--window-size=1920,1080");
+            
             // Setup driver
             WebDriverManager.chromedriver().setup();
             this.driver = new ChromeDriver(options);
+            
+            // For local testing, also try to maximize using Dimension (more reliable)
+            if (!isCI) {
+                try {
+                    driver.manage().window().setSize(new Dimension(1920, 1080));
+                } catch (Exception e) {
+                    System.out.println("Could not resize window: " + e.getMessage());
+                }
+            }
         }
 
         /**
