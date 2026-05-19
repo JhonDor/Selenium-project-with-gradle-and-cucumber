@@ -23,7 +23,8 @@ public class WebHooks {
             if (tag.equals("@webAutomation")) {
                 driver = new DriverWeb();
                 driver.getDriver().get("https://practicesoftwaretesting.com/");
-                driver.getDriver().manage().window().maximize();
+                // Skip maximize() call which causes CDP errors with Chrome 148
+                // Window size is already set via ChromeOptions
             }
         });
 
